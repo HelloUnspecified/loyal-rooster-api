@@ -1,0 +1,66 @@
+{
+  "name": "loyal-rooster-api",
+  "version": "1.0.0",
+  "description": "Loyal Rooster API",
+  "main": "index.js",
+  "engines": {
+    "node": "12.16.1"
+  },
+  "scripts": {
+    "build": "wrangler build",
+    "dev": "nodemon -e env,js,json,graphql --watch src --ignore '*.test.js' --exec npm run deploy:local",
+    "start": "node ./src/index.js",
+    "lint": "eslint 'src/**/*.js'",
+    "validate": "concurrently npm:test npm:lint npm:build"
+  },
+  "dependencies": {
+    "@sentry/node": "^5.15.2",
+    "@sentry/webpack-plugin": "^1.10.0",
+    "apollo-server-cloudflare": "^2.11.0",
+    "dayjs": "^1.8.23",
+    "debug": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "graphql-scalars": "^1.0.9",
+    "lodash": "^4.17.15",
+    "merge-graphql-schemas": "^1.7.6",
+    "response-time": "^2.3.2",
+    "uuid": "^7.0.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/register": "^7.9.0",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^25.2.1",
+    "concurrently": "^5.1.0",
+    "cross-env": "^7.0.2",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jest": "^23.8.2",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.2.3",
+    "jest-cli": "^25.2.1",
+    "nodemon": "^2.0.2",
+    "pino-pretty": "^3.6.1",
+    "prettier-eslint": "^9.0.1",
+    "prettier-eslint-cli": "^5.0.0",
+    "webpack": "^4.42.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run validate"
+    }
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "rootDir": "./src",
+    "coverageDirectory": "../__testCoverage__"
+  }
+}

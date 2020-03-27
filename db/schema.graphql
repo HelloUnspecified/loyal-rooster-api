@@ -1,0 +1,85 @@
+type Address {
+  phoneNumber: String
+  streetAddress: String!
+  streetAddressSecondLine: String
+  city: String!
+  state: String!
+  zip: String!
+}
+
+type Point {
+  name: String!
+  company: Company!
+  description: String
+  value: Int!
+  createdAt: Date!
+  lastUpdatedAt: Time!
+}
+
+type Reward {
+  company: Company!
+  name: String!
+  description: String
+  logo: String
+  value: Int!
+  createdAt: Date!
+  lastUpdatedAt: Time!
+}
+
+type Member {
+  mobileNumber: String!
+  firstName: String
+  lastName: String
+  joinedAt: Date!
+  lastUpdatedAt: Time!
+  birthday: Date
+  lifetimePoints: Int! @resolver
+  currentPoints: Int!
+  company: Company!
+  points: [PointHistory] @relation
+  rewards: [RewardHistory] @relation
+}
+
+type PointHistory {
+  user: User!
+  member: Member!
+  company: Company!
+  points: Int!
+  issued: Time!
+}
+
+type RewardHistory {
+  user: User!
+  member: Member!
+  company: Company!
+  points: Int!
+  taken: Time!
+}
+
+type User {
+  userId: String! @unique
+  company: Company!
+  firstName: String
+  lastName: String
+  role: String
+}
+
+type Company {
+  name: String!
+  website: String
+  logoUrl: String
+  billingAddress: Address
+  address: Address
+  joinedDate: Date!
+  programName: String
+
+  rewards: [Reward] @relation
+  pointTypes: [Point] @relation
+
+  members: [Member] @relation
+  users: [User] @relation
+}
+
+type Query {
+  allCompanies: [Company!]
+}
