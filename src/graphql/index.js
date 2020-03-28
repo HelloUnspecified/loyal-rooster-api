@@ -1,14 +1,24 @@
 import debug from 'debug';
 import { ApolloServer, gql } from 'apollo-server-cloudflare';
+import serverOptions from './options';
 
+import KVCache from '../utilities/KVCache';
 import typeDefsRaw from './typeDefs';
 import resolvers from './resolvers';
 
-const dlog = debug('loyal:rooster:api:graphServer');
+const {
+  graphqlCloudflare,
+} = require('apollo-server-cloudflare/dist/cloudflareApollo');
+
+const dlog = debug('unspecified:loyalrooster:api:graph');
+
+const kvCache = { cache: new KVCache() };
 
 const typeDefs = gql`
   ${typeDefsRaw}
 `;
+
+const dataSources = () => ({});
 
 const createServer = () => {
   dlog('creating apollo server');
@@ -16,11 +26,18 @@ const createServer = () => {
   return new ApolloServer({
     typeDefs,
     resolvers,
-    introspection: JSON.parse(process.env.ENABLE_GRAPH_INTROSPECTION || false),
-    playground: JSON.parse(process.env.ENABLE_GRAPH_PLAYGROUND)
-      ? { endpoint: '/' }
-      : false,
+    introspection: true,
+    dataSources,
+    ...(serverOptions.kvCache ? kvCache : {}),
   });
 };
 
-export default createServer;
+const handler = request => {
+  const server = createServer();
+  return graphqlCloudflare(() => server.createGraphQLServerOptions(request))(
+    request,
+  );
+};
+
+export default handler;
+export const options = serverOptions;
